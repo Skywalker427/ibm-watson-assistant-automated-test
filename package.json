@@ -1,0 +1,22 @@
+{
+  "name": "watson-assistant-regression-test",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "test": "standard && mocha --timeout 10000 --recursive --exit"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "chai-http": "^3.0.0",
+    "chai-subset": "^1.6.0",
+    "dotenv": "^5.0.1",
+    "mocha": "^5.1.1",
+    "standard": "^11.0.1",
+    "watson-developer-cloud": "^3.4.1",
+    "winston": "^2.4.2"
+  },
+  "repository": {},
+  "engines": {
+    "node": "6.x"
+  }
+}
