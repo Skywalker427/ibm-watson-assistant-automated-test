@@ -4,6 +4,7 @@ const chai = require('chai')
 const dotenv = require('dotenv')
 const AssistantV1 = require('watson-developer-cloud/assistant/v1')
 const winston = require('winston')
+const csvtoJsonSync = require('csvtojsonsync')
 
 const expect = chai.expect
 winston.level = 'debug'
@@ -29,17 +30,12 @@ before(function (done) {
   done()
 })
 
-describe('Validating intent #turn_off', function () {
+let csvData = csvtoJsonSync('./CSVs/mobileData.csv', ',')
+
+describe('Validating intent data from CSV file..../', function () {
   let flow = false
   let context = null
-  let tests = [
-    {
-      question: 'I want Internet settings on my samsung',
-      expected_intent: 'mobile.data-settings',
-      expected_entity_type: 'device-type',
-      expected_entity_value: 'android'
-    }
-  ]
+  let tests = csvData
 
   tests.forEach(function (test) {
     it('should return the following' + ' #' + test.expected_intent, function (
@@ -51,46 +47,45 @@ describe('Validating intent #turn_off', function () {
       let entityType
       let entityValue
 
-      assistant.message(
-        {
-          workspace_id: ASSISTANT_WORKSPACEID,
-          input: {
-            text: test.question
-          },
-          context: context
+      assistant.message({
+        workspace_id: ASSISTANT_WORKSPACEID,
+        input: {
+          text: test.question
         },
-        function (err, response) {
-          if (err) winston.error('error:', err)
-          if (flow) context = response.context
+        context: context
+      },
+      function (err, response) {
+        if (err) winston.error('error:', err)
+        if (flow) context = response.context
 
-          intent = response.intents[0].intent
-          const confidence = response.intents[0].confidence
+        intent = response.intents[0].intent
+        const confidence = response.intents[0].confidence
 
-          expect(intent).to.be.equal(test.expected_intent)
-          expect(confidence).to.be.least(minConfidence)
+        expect(intent).to.be.equal(test.expected_intent)
+        expect(confidence).to.be.least(minConfidence)
 
-          // tbd deep equal
-          if (test.expected_entity_type) {
-            entityType = response.entities[0].entity
-            expect(entityType).to.be.equal(test.expected_entity_type)
-          }
-
-          if (test.expected_entity_value) {
-            entityValue = response.entities[0].value
-            expect(entityValue).to.be.equal(test.expected_entity_value)
-          }
-
-          if (flow) winston.info('answer: ' + response.output.text)
-          else {
-            winston.info(
-              'intent: ',
-              intent,
-              ' confidence: ',
-              parseFloat(confidence).toFixed(2)
-            )
-          }
-          done()
+        // tbd deep equal
+        if (test.expected_entity_type) {
+          entityType = response.entities[0].entity
+          expect(entityType).to.be.equal(test.expected_entity_type)
         }
+
+        if (test.expected_entity_value) {
+          entityValue = response.entities[0].value
+          expect(entityValue).to.be.equal(test.expected_entity_value)
+        }
+
+        if (flow) winston.info('answer: ' + response.output.text)
+        else {
+          winston.info(
+            'intent: ',
+            intent,
+            ' confidence: ',
+            parseFloat(confidence).toFixed(2)
+          )
+        }
+        done()
+      }
       )
     })
   })

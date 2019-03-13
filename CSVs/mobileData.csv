@@ -1,0 +1,4 @@
+question,expected_intent,expected_entity_type,expected_entity_value
+please send me internet settings on my android,mobile.data-settings,device-type,android
+good morning,General_Greetings,,
+send browsing setting to my ipad,mobile.data-settings,device-type,ios

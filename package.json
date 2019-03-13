@@ -18,5 +18,11 @@
   "repository": {},
   "engines": {
     "node": "6.x"
+  },
+  "dependencies": {
+    "csv-box": "^1.0.8",
+    "csvtojson": "^2.0.8",
+    "csvtojson-converter": "^2.0.4",
+    "csvtojsonsync": "^1.1.1"
   }
 }
